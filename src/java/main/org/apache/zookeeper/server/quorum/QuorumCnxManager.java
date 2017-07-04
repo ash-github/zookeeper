@@ -74,11 +74,6 @@ public class QuorumCnxManager {
     static final int SEND_CAPACITY = 1;
 
     static final int PACKETMAXSIZE = 1024 * 512;
-    /*
-     * Maximum number of attempts to connect to a peer
-     */
-
-    static final int MAX_CONNECTION_ATTEMPTS = 2;
     
     /*
      * Negative counter for observer server ids.
@@ -138,6 +133,12 @@ public class QuorumCnxManager {
      * Counter to count worker threads
      */
     private AtomicInteger threadCnt = new AtomicInteger(0);
+
+    /*
+     * Socket options for TCP keepalive
+     */
+    private final boolean tcpKeepAlive = Boolean.getBoolean("zookeeper.tcpKeepAlive");
+
 
     static public class Message {
         Message(ByteBuffer buffer, long sid) {
@@ -565,6 +566,7 @@ public class QuorumCnxManager {
      */
     private void setSockOpts(Socket sock) throws SocketException {
         sock.setTcpNoDelay(true);
+        sock.setKeepAlive(tcpKeepAlive);
         sock.setSoTimeout(self.tickTime * self.syncLimit);
     }
 

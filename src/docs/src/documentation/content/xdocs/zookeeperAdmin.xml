@@ -958,15 +958,14 @@ server.3=zoo3:2888:3888</programlisting>
             <listitem>
               <para>(No Java system property)</para>
 
-              <para>Election implementation to use. A value of "0" corresponds
-              to the original UDP-based version, "1" corresponds to the
+              <para>Election implementation to use. A value of "1" corresponds to the
               non-authenticated UDP-based version of fast leader election, "2"
               corresponds to the authenticated UDP-based version of fast
               leader election, and "3" corresponds to TCP-based version of
-              fast leader election. Currently, algorithm 3 is the default</para>
+              fast leader election. Currently, algorithm 3 is the default.</para>
               
               <note>
-              <para> The implementations of leader election 0, 1, and 2 are now 
+              <para> The implementations of leader election 1, and 2 are now
               <emphasis role="bold"> deprecated </emphasis>. We have the intention
               of removing them in the next release, at which point only the 
               FastLeaderElection will be available. 
@@ -1029,9 +1028,7 @@ server.3=zoo3:2888:3888</programlisting>
 
               <para>There are two port numbers <emphasis role="bold">nnnnn</emphasis>. 
               The first followers use to connect to the leader, and the second is for 
-              leader election. The leader election port is only necessary if electionAlg 
-              is 1, 2, or 3 (default). If electionAlg is 0, then the second port is not 
-              necessary. If you want to test multiple servers on a single machine, then 
+              leader election. If you want to test multiple servers on a single machine, then
               different ports can be used for each server.</para>
             </listitem>
           </varlistentry>
@@ -1189,6 +1186,29 @@ server.3=zoo3:2888:3888</programlisting>
             </listitem>
           </varlistentry>
 
+          <varlistentry>
+            <term>tcpKeepAlive</term>
+
+            <listitem>
+              <para>(Java system property: <emphasis
+                      role="bold">zookeeper.tcpKeepAlive</emphasis>)</para>
+
+              <para><emphasis role="bold">New in 3.5.4:</emphasis>
+                Setting this to true sets the TCP keepAlive flag on the
+                sockets used by quorum members to perform elections.
+                This will allow for connections between quorum members to
+                remain up when there is network infrastructure that may
+                otherwise break them. Some NATs and firewalls may terminate
+                or lose state for long running or idle connections.</para>
+
+              <para> Enabling this option relies on OS level settings to work
+                properly, check your operating system's options regarding TCP
+                keepalive for more information.  Defaults to
+                <emphasis role="bold">false</emphasis>.
+              </para>
+            </listitem>
+          </varlistentry>
+
         </variablelist>
         <para></para>
       </section>
@@ -1243,6 +1263,19 @@ server.3=zoo3:2888:3888</programlisting>
               When this parameter is set to an X500 principal name, only an
               authenticated client with that principal will be able to bypass
               ACL checking and have full privileges to all znodes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>zookeeper.superUser</term>
+            <listitem>
+              <para>(Java system property: <emphasis
+              role="bold">zookeeper.superUser</emphasis>)</para>
+
+              <para>Similar to <emphasis role="bold">zookeeper.X509AuthenticationProvider.superUser</emphasis>
+              but is generic for SASL based logins. It stores the name of 
+              a user that can access the znode hierarchy as a "super" user.
+              </para>
             </listitem>
           </varlistentry>
 
@@ -2135,7 +2168,7 @@ server.3=zoo3:2888:3888</programlisting>
         </varlistentry>
 
         <varlistentry>
-          <term>incorrect placement of transasction log</term>
+          <term>incorrect placement of transaction log</term>
 
           <listitem>
             <para>The most performance critical part of ZooKeeper is the
